@@ -1,0 +1,5 @@
+module Decompound
+  VERSION: String
+
+  def self.split: (String word) -> Array[String]
+end
