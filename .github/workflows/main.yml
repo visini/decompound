@@ -27,4 +27,4 @@ jobs:
       - name: Run RBS validation
         run: bundle exec rbs validate
       - name: Run tests
-        run: rake test
+        run: bundle exec rake test
