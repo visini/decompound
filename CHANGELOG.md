@@ -1,5 +1,10 @@
 ## [Unreleased]
 
+## [0.3.1] - 2026-07-16
+
+- Remove `data/ngram_probs.json` from the gem
+- Eager load model in Rails
+
 ## [0.3.0] - 2026-07-16
 
 - Use binary model format: Reduce memory by searching a packed binary model instead of parsing JSON into hashes. Slower throughput though.
