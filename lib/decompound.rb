@@ -7,6 +7,13 @@ module Decompound
   MODEL_PATH = File.expand_path("../data/model.bin", __dir__)
   FUGEN_S_ENDINGS = %w[ts gs ks hls ns].freeze
 
+  # Loads the model up front instead of on the first split. Called by Rails
+  # on boot when config.eager_load is enabled (see Decompound::Railtie).
+  def self.eager_load!
+    model
+    nil
+  end
+
   def self.split(word)
     word = word.downcase
 
@@ -54,3 +61,5 @@ module Decompound
   end
   private_class_method :model
 end
+
+require_relative "decompound/railtie" if defined?(Rails::Railtie)

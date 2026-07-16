@@ -7,6 +7,12 @@ class TestDecompound < Minitest::Test
     refute_nil ::Decompound::VERSION
   end
 
+  def test_eager_load_loads_the_model
+    assert_nil Decompound.eager_load!
+
+    refute_nil Decompound.instance_variable_get(:@model)
+  end
+
   def test_splits_correctly
     File.foreach(File.join(__dir__, "fixtures", "words.tsv"), chomp: true) do |line|
       compound, expected = line.split("\t", 2)
