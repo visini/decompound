@@ -42,10 +42,11 @@ After checking out the repo, run `bin/setup` to install dependencies, `rake test
 For each release:
 
 1. Update `lib/decompound/version.rb`
-2. Update `CHANGELOG.md`
-3. Run tests and RBS validation
-4. Commit with message `Prepare x.x.x release` and push
-5. Run `bundle exec rake release`
+2. Run `bundle install` to update `Gemfile.lock`
+3. Update `CHANGELOG.md`
+4. Run tests and RBS validation
+5. Commit with message `Prepare x.x.x release` and push
+6. Run `bundle exec rake release`
 
 ### Training CharSplit probabilities
 
