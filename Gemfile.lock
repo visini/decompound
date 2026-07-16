@@ -2,7 +2,6 @@ PATH
   remote: .
   specs:
     decompound (0.2.0)
-      json (>= 2.9)
 
 GEM
   remote: https://rubygems.org/

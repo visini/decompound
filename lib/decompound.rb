@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require "json"
 require_relative "decompound/version"
+require_relative "decompound/model"
 
 module Decompound
-  NGRAM_PATH = File.expand_path("../data/ngram_probs.json", __dir__)
+  MODEL_PATH = File.expand_path("../data/model.bin", __dir__)
   FUGEN_S_ENDINGS = %w[ts gs ks hls ns].freeze
 
   def self.split(word)
@@ -20,7 +20,7 @@ module Decompound
   end
 
   def self.split_candidates(word)
-    probabilities = ngram_probabilities
+    model = self.model
 
     (3...(word.length - 2)).map do |position|
       left = word[0...position]
@@ -28,11 +28,12 @@ module Decompound
       left_ngram = without_fugen_s(left)
       right_ngram = without_fugen_s(right)
 
-      suffix_probability = probabilities.fetch("suffix").fetch(left_ngram, -1)
-      prefix_probability = probabilities.fetch("prefix").fetch(right_ngram, -1)
-      infix_probability = (3..(word.length + 1)).filter_map do |length|
-        ngram = right[0, length]
-        probabilities.fetch("infix").fetch(ngram, 1) unless ngram.empty?
+      suffix_probability = model.probability(left_ngram, Model::SUFFIX, -1)
+      prefix_probability = model.probability(right_ngram, Model::PREFIX, -1)
+      # CharSplit scans lengths up to word.length + 1; slices past the end of
+      # +right+ all yield +right+ itself, so stopping there is equivalent.
+      infix_probability = (3..right.length).map do |length|
+        model.probability(right[0, length], Model::INFIX, 1)
       end.min
 
       [prefix_probability - infix_probability + suffix_probability, left, right]
@@ -48,8 +49,8 @@ module Decompound
   end
   private_class_method :without_fugen_s
 
-  def self.ngram_probabilities
-    @ngram_probabilities ||= JSON.parse(File.read(NGRAM_PATH, encoding: "utf-8"))
+  def self.model
+    @model ||= Model.load(MODEL_PATH)
   end
-  private_class_method :ngram_probabilities
+  private_class_method :model
 end

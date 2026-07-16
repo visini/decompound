@@ -17,38 +17,25 @@ The bundled model is trained on 127,106 German Wiktionary noun lemmas and their 
 
 ## Installation
 
-Install the gem and add to the application's Gemfile by executing:
-
 ```bash
 bundle add decompound
 ```
 
-If bundler is not being used to manage dependencies, install the gem by executing:
+Or without bundler:
 
 ```bash
 gem install decompound
 ```
 
-## Usage
-
-```rb
-require "decompound"
-
-word = "Bodenbelag"
-parts = Decompound.split(word)
-# => ["boden", "belag"]
-```
-
 ## Roadmap
 
-- Improve memory efficiency
-- Provide different models (small, medium, large)
+- Provide different models (small, medium, large) (?)
+- Recursive decompounding
+  - `Fussbodenbelag` → `Fuss` + `Bodenbelag` → `Fuss` + `Boden` + `Belag`
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
-
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+After checking out the repo, run `bin/setup` to install dependencies, `rake test` to run the tests, and `bin/console` for an interactive prompt.
 
 ### Release process
 
@@ -73,11 +60,19 @@ ruby bin/train.rb \
 
 `--forms lemmas` uses only lemmas, while `--forms nominative` uses lemmas plus nominative inflections. Inflected forms provide the linking-element evidence (e.g. the *-s* in *Einkaufsliste*), so the bundled model uses `all`. The generated JSON contains CharSplit-compatible `prefix`, `infix`, and `suffix` probabilities.
 
+### Packing the runtime model
+
+The gem ships the probabilities as a binary table (`data/model.bin`), searched in place:
+
+```sh
+ruby bin/pack.rb data/ngram_probs.json data/model.bin
+```
+
 ## Provenance and credits
 
 The noun corpus used to train the bundled probabilities is derived from [German Wiktionary](https://de.wiktionary.org/). It is extracted by [Wiktextract](https://github.com/tatuylonen/wiktextract) and distributed by [Kaikki.org](https://kaikki.org/). Wiktionary textual content is licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) and, where applicable, the GNU Free Documentation License. See [`data/vendor/german-nouns/SOURCE.md`](data/vendor/german-nouns/SOURCE.md) for the pinned source, extraction process, and reproducibility details.
 
-The splitting and training algorithms are Ruby ports of [CharSplit](https://github.com/dtuggener/CharSplit), created by Don Tuggener and described in *Incremental Coreference Resolution for German* (University of Zurich, 2016). CharSplit is MIT licensed; its copyright and license are reproduced in [`LICENSE-CharSplit.txt`](LICENSE-CharSplit.txt).
+The splitting and training algorithms are Ruby ports of [CharSplit](https://github.com/dtuggener/CharSplit), created by Don Tuggener and described in [Incremental Coreference Resolution for German](https://doi.org/10.5167/uzh-124915) (University of Zurich, 2016). CharSplit is MIT licensed; its copyright and license are reproduced in [`LICENSE-CharSplit.txt`](LICENSE-CharSplit.txt).
 
 See [`NOTICE.md`](NOTICE.md) for consolidated third-party notices.
 

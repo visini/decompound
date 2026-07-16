@@ -27,13 +27,10 @@ Gem::Specification.new do |spec|
         f.start_with?(*%w[bin/ data/vendor/ Gemfile .gitignore test/ .github/ .standard.yml])
     end
   end
-  spec.files << "data/ngram_probs.json"
+  spec.files << "data/model.bin"
   spec.bindir = "exe"
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
-
-  # The runtime model is stored as JSON.
-  spec.add_dependency "json", ">= 2.9"
 
   # For more information and examples about making a new gem, check out our
   # guide at: https://bundler.io/guides/creating_gem.html
